@@ -21,7 +21,6 @@ import factory
 from factory.fuzzy import FuzzyChoice, FuzzyDecimal
 from service.models import Product, Category
 
-
 class ProductFactory(factory.Factory):
     """Creates fake products for testing"""
 
@@ -31,4 +30,40 @@ class ProductFactory(factory.Factory):
         model = Product
 
     id = factory.Sequence(lambda n: n)
-   ## Add code to create Fake Products 
+   ## Add code to create Fake Products
+    name = FuzzyChoice(
+        choices=[
+            'iPhone',
+            'LG OLED-TV',
+            'AirPods Max',
+            'AirPods Pro',
+            'MacBook Pro',
+            'MacBook Air',
+            'iPad Air',
+            'iPad Pro',
+            'Nintendo Switch',
+            'Apple Watch',
+            'Heineken',
+            'Flensburger',
+            'Absolut Vodka',
+            'Havanna Club',
+            'GoPro',
+            'Tesla Model S',
+            'Playstation 5',
+            'XBox Series X',
+            'North Orbit'
+            ]
+            )
+    description = factory.Faker('text')
+    price = FuzzyDecimal(1,2.5,5,100,200,500,1000)
+    available = FuzzyChoice(choices=[True,False])
+    category = FuzzyChoice(
+        choices=[
+            Category.UNKNOWN,
+            Category.SPIRIT,
+            Category.BEER,
+            Category.KITESURFING,
+            Category.AUTOMOTIVE,
+            Category.TECH
+            ]
+            )
