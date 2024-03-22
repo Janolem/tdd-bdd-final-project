@@ -35,6 +35,8 @@ DATABASE_URI = os.getenv(
     "DATABASE_URI", "postgresql://postgres:postgres@localhost:5432/postgres"
 )
 
+logger = logging.getLogger(__name__)
+logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.DEBUG)
 
 ######################################################################
 #  P R O D U C T   M O D E L   T E S T   C A S E S
@@ -106,8 +108,8 @@ class TestProductModel(unittest.TestCase):
     #
     def test_read_a_product(self):
         """It should read the informations about a product"""
-        product = Product
         product = ProductFactory()
+        logger.debug(product.__repr__())
         product.id = None
         product.create()
         # Assert that it was assigned an id and shows up in the database
@@ -120,4 +122,23 @@ class TestProductModel(unittest.TestCase):
         self.assertEqual(Decimal(found_product.price), product.price)
         self.assertEqual(found_product.available, product.available)
         self.assertEqual(found_product.category, product.category)
+
+    def test_update_a_product(self):
+        """It should update certain informations about the produtct"""
+        product = ProductFactory()
+        logger.debug(product.__repr__())
+        product.id = None
+        product.create()
+        # Assert that it was assigned an id and shows up in the database
+        self.assertIsNotNone(product.id)
+        logger.debug(product.__repr__())
+        product.description = "this is a description"
+        original_id = product.id
+        product.update()
+        self.assertEqual(product.id, original_id)
+        self.assertEqual(product.description, "this is a description")
+        updated_product = Product.find(original_id)
+        self.assertEqual(updated_product.id, original_id)
+        self.assertEqual(updated_product.description, "this is a description")
+
         
