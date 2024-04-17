@@ -166,6 +166,43 @@ class TestProductRoutes(TestCase):
     #
     # ADD YOUR TEST CASES HERE
     #
+    def test_get_product(self):
+        """It should get a product via a GET call by the id"""
+        test_product = self._create_products()[0]
+        response = self.client.get(f"{BASE_URL}/{test_product.id}")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.json, test_product.serialize())
+    
+    def test_get_product_not_found(self):
+        """It should not Get a Product thats not found"""
+        response = self.client.get(f"{BASE_URL}/0")
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        data = response.get_json()
+        self.assertIn("was not found", data["message"])
+    
+    def test_update_product(self):
+        """It should update an existing product"""
+        raise Exception("not implemented")
+
+    def test_delete_product(self):
+        """It should delete an existing product"""
+        raise Exception("not implemented")
+
+    def test_list_products(self):
+        """It should list all products"""
+        raise Exception("not implemented")
+    
+    def test_list_products_by_name(self):
+        """It should list all products with a given name"""
+        raise Exception("not implemented")
+    
+    def test_list_products_by_category(self):
+        """It should list all products with a given category"""
+        raise Exception("not implemented")
+    
+    def test_list_products_by_availability(self):
+        """It should list all products with a given availability"""
+        raise Exception("not implemented")
 
     ######################################################################
     # Utility functions

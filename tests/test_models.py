@@ -42,6 +42,8 @@ logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.DEBUG)
 #  P R O D U C T   M O D E L   T E S T   C A S E S
 ######################################################################
 # pylint: disable=too-many-public-methods
+
+
 class TestProductModel(unittest.TestCase):
     """Test Cases for Product Model"""
 
@@ -109,13 +111,13 @@ class TestProductModel(unittest.TestCase):
     def test_read_a_product(self):
         """It should read the informations about a product"""
         product = ProductFactory()
-        logger.debug(product.__repr__())
+        logger.debug(repr(product))
         product.id = None
         product.create()
         # Assert that it was assigned an id and shows up in the database
         self.assertIsNotNone(product.id)
         # read the product via the find function
-        found_product = Product.find(product_id)
+        found_product = Product.find(product.id)
         # compare properties
         self.assertEqual(found_product.name, product.name)
         self.assertEqual(found_product.description, product.description)
@@ -126,12 +128,12 @@ class TestProductModel(unittest.TestCase):
     def test_update_a_product(self):
         """It should update certain informations about the produtct"""
         product = ProductFactory()
-        logger.debug(product.__repr__())
+        logger.debug(repr(product))
         product.id = None
         product.create()
         # Assert that it was assigned an id and shows up in the database
         self.assertIsNotNone(product.id)
-        logger.debug(product.__repr__())
+        logger.debug(repr(product))
         product.description = "this is a description"
         original_id = product.id
         product.update()
@@ -141,10 +143,20 @@ class TestProductModel(unittest.TestCase):
         self.assertEqual(updated_product.id, original_id)
         self.assertEqual(updated_product.description, "this is a description")
 
+    def test_update_a_product_without_id(self):
+        product = ProductFactory()
+        logger.debug(repr(product))
+        product.create()
+        # Assert that it was assigned an id and shows up in the database
+        product.id = None
+        self.assertIsNone(product.id)
+        
+
+
     def test_delete_a_product(self):
         """It should delete a product"""
         product = ProductFactory()
-        logger.debug(product.__repr__())
+        logger.debug(repr(product))
         product.id = None
         product.create()
         # Assert that it was assigned an id and shows up in the database
@@ -159,7 +171,7 @@ class TestProductModel(unittest.TestCase):
         """It should list all products"""
         products = Product.all()
         self.assertEqual(products, [])
-        for i in range(5):
+        for _ in range(5):
             product = ProductFactory()
             product.create()
         products = Product.all()
@@ -201,5 +213,14 @@ class TestProductModel(unittest.TestCase):
         for product in found:
             self.assertEqual(product.category, category)
 
-
-        
+    def test_find_product_by_price(self):
+        """It should find products by their price"""
+        products = ProductFactory.create_batch(10)
+        for product in products:
+            product.create()
+        price = products[0].price
+        count = len([product for product in products if product.price == price])
+        found = Product.find_by_price(price)
+        self.assertEqual(found.count(), count)
+        for product in found:
+            self.assertEqual(product.price, price)

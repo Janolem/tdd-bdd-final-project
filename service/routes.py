@@ -86,11 +86,8 @@ def create_products():
 
     message = product.serialize()
 
-    #
-    # Uncomment this line of code once you implement READ A PRODUCT
-    #
-    # location_url = url_for("get_products", product_id=product.id, _external=True)
-    location_url = "/"  # delete once READ is implemented
+    location_url = url_for("get_products", product_id=product.id, _external=True)
+
     return jsonify(message), status.HTTP_201_CREATED, {"Location": location_url}
 
 
@@ -102,13 +99,24 @@ def create_products():
 # PLACE YOUR CODE TO LIST ALL PRODUCTS HERE
 #
 
+
 ######################################################################
 # R E A D   A   P R O D U C T
 ######################################################################
+@app.route("/products/<product_id>", methods=["GET"])
+def get_products(product_id):
+    """
+    Reads a Product
+    This endpoint will read a Product based on its id
+    """
+    found_product = Product.find(product_id)
+    if found_product is None:
+        abort(status.HTTP_404_NOT_FOUND, f"Product with id '{product_id}' was not found.")
+    
+    message = found_product.serialize()
 
-#
-# PLACE YOUR CODE HERE TO READ A PRODUCT
-#
+    return jsonify(message), status.HTTP_200_OK
+
 
 ######################################################################
 # U P D A T E   A   P R O D U C T
