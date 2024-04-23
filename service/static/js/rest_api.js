@@ -97,7 +97,7 @@ $(function () {
         $("#flash_message").empty();
 
         let ajax = $.ajax({
-                type: "PUT",
+                type: "POST",
                 url: `/products/${product_id}`,
                 contentType: "application/json",
                 data: JSON.stringify(data)
